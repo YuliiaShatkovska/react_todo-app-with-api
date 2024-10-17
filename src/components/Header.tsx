@@ -72,7 +72,7 @@ export const Header: FC<Props> = ({
     );
   };
 
-  const handleResetCompletedTodos = () => {
+  const handleToggleCompletedTodos = () => {
     const completed = !areTodosAllCompleted;
 
     return todos
@@ -87,15 +87,16 @@ export const Header: FC<Props> = ({
 
   return (
     <header className="todoapp__header">
-      <button
-        type="button"
-        className={cn('todoapp__toggle-all', {
-          active: areTodosAllCompleted && todos.length > 0,
-          disabled: todos.length === 0 || isLoading,
-        })}
-        data-cy="ToggleAllButton"
-        onClick={handleResetCompletedTodos}
-      />
+      {todos.length > 0 && !isLoading && (
+        <button
+          type="button"
+          className={cn('todoapp__toggle-all', {
+            active: areTodosAllCompleted && todos.length > 0,
+          })}
+          data-cy="ToggleAllButton"
+          onClick={handleToggleCompletedTodos}
+        />
+      )}
 
       <form onSubmit={handleSubmit}>
         <input

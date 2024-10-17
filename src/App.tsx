@@ -34,10 +34,6 @@ export const App: FC = () => {
   const [errorMessage, setErrorMessage] = useState(Errors.DEFAULT);
   const [filterStatus, setFilterStatus] = useState(FilterStatus.ALL);
 
-  const handleResetErrorMessage = () => {
-    setErrorMessage(Errors.DEFAULT);
-  };
-
   useEffect(() => {
     setErrorMessage(Errors.DEFAULT);
     setIsLoading(true);
@@ -47,6 +43,10 @@ export const App: FC = () => {
       .catch(() => setErrorMessage(Errors.LOADING_TODOS))
       .finally(() => setIsLoading(false));
   }, []);
+
+  const handleResetErrorMessage = () => {
+    setErrorMessage(Errors.DEFAULT);
+  };
 
   const filteredTodos = getFilteredTodos(todos, filterStatus);
 
@@ -96,7 +96,10 @@ export const App: FC = () => {
       });
   };
 
-  const handleUpdateTodo = (todoToUpdate: Todo) => {
+  const handleUpdateTodo = (
+    todoToUpdate: Todo,
+    setIsEditing?: Dispatch<SetStateAction<boolean>>,
+  ) => {
     setLoadingTodoIds(currentLoadingTodosIds => [
       ...currentLoadingTodosIds,
       todoToUpdate.id,
@@ -112,6 +115,8 @@ export const App: FC = () => {
 
           return newTodos;
         });
+
+        setIsEditing!(false);
       })
       .catch(() => setErrorMessage(Errors.UPDATE_TODO))
       .finally(() => setLoadingTodoIds([]));
