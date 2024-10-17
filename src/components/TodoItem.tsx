@@ -8,6 +8,8 @@ import {
   FormEvent,
   Dispatch,
   SetStateAction,
+  useRef,
+  useEffect,
 } from 'react';
 import cn from 'classnames';
 
@@ -19,6 +21,7 @@ type Props = {
   handleDeleteTodo: (todoId: number) => void;
   handleUpdateTodo: (
     todoToUpdate: Todo,
+    isEditing?: boolean,
     setIsEditing?: Dispatch<SetStateAction<boolean>>,
   ) => void;
 };
@@ -78,6 +81,7 @@ export const TodoItem: FC<Props> = ({
         ...todo,
         title: newTitle.trim(),
       },
+      isEditing,
       setIsEditing,
     );
   };

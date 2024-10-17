@@ -98,6 +98,7 @@ export const App: FC = () => {
 
   const handleUpdateTodo = (
     todoToUpdate: Todo,
+    isEditing?: boolean,
     setIsEditing?: Dispatch<SetStateAction<boolean>>,
   ) => {
     setLoadingTodoIds(currentLoadingTodosIds => [
@@ -116,7 +117,9 @@ export const App: FC = () => {
           return newTodos;
         });
 
-        setIsEditing!(false);
+        if (isEditing) {
+          setIsEditing!(false);
+        }
       })
       .catch(() => setErrorMessage(Errors.UPDATE_TODO))
       .finally(() => setLoadingTodoIds([]));
