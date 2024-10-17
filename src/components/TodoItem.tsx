@@ -8,8 +8,6 @@ import {
   FormEvent,
   Dispatch,
   SetStateAction,
-  useRef,
-  useEffect,
 } from 'react';
 import cn from 'classnames';
 
