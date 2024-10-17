@@ -56,7 +56,9 @@ export const TodoItem: FC<Props> = ({
     }
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (
+    event: FormEvent<HTMLFormElement> | React.FocusEvent<HTMLInputElement>,
+  ) => {
     event.preventDefault();
 
     if (newTitle.trim() === title) {
