@@ -1,6 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { FC, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  FC,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
 
 import { UserWarning } from './UserWarning';
 
@@ -50,36 +57,39 @@ export const App: FC = () => {
 
   const filteredTodos = getFilteredTodos(todos, filterStatus);
 
-  const handleAddTodo = (
-    { title, userId, completed }: Omit<Todo, 'id'>,
-    setTitle: Dispatch<SetStateAction<string>>,
-  ) => {
-    setIsAddingTodo(true);
-    const todo = {
-      id: 0,
-      title,
-      userId,
-      completed,
-    };
+  const handleAddTodo = useCallback(
+    (
+      { title, userId, completed }: Omit<Todo, 'id'>,
+      setTitle: Dispatch<SetStateAction<string>>,
+    ) => {
+      setIsAddingTodo(true);
+      const todo = {
+        id: 0,
+        title,
+        userId,
+        completed,
+      };
 
-    setTempTodo(todo);
+      setTempTodo(todo);
 
-    createTodo({ title, userId, completed })
-      .then(newTodo => {
-        setTodos(currentTodos => [...currentTodos, newTodo]);
-        setTitle('');
-      })
-      .catch(() => {
-        setErrorMessage(Errors.ADDING_TODO);
-        setTitle(title);
-      })
-      .finally(() => {
-        setIsAddingTodo(false);
-        setTempTodo(null);
-      });
-  };
+      createTodo({ title, userId, completed })
+        .then(newTodo => {
+          setTodos(currentTodos => [...currentTodos, newTodo]);
+          setTitle('');
+        })
+        .catch(() => {
+          setErrorMessage(Errors.ADDING_TODO);
+          setTitle(title);
+        })
+        .finally(() => {
+          setIsAddingTodo(false);
+          setTempTodo(null);
+        });
+    },
+    [],
+  );
 
-  const handleDeleteTodo = (todoId: number) => {
+  const handleDeleteTodo = useCallback((todoId: number) => {
     setLoadingTodoIds(currentLoadingTodoIds => [
       ...currentLoadingTodoIds,
       todoId,
@@ -94,36 +104,41 @@ export const App: FC = () => {
       .finally(() => {
         setLoadingTodoIds([]);
       });
-  };
+  }, []);
 
-  const handleUpdateTodo = (
-    todoToUpdate: Todo,
-    isEditing?: boolean,
-    setIsEditing?: Dispatch<SetStateAction<boolean>>,
-  ) => {
-    setLoadingTodoIds(currentLoadingTodosIds => [
-      ...currentLoadingTodosIds,
-      todoToUpdate.id,
-    ]);
+  const handleUpdateTodo = useCallback(
+    (
+      todoToUpdate: Todo,
+      isEditing?: boolean,
+      setIsEditing?: Dispatch<SetStateAction<boolean>>,
+    ) => {
+      setLoadingTodoIds(currentLoadingTodosIds => [
+        ...currentLoadingTodosIds,
+        todoToUpdate.id,
+      ]);
 
-    updateTodo(todoToUpdate)
-      .then(updatedTodo => {
-        setTodos(currentTodos => {
-          const newTodos = [...currentTodos];
-          const index = newTodos.findIndex(todo => todo.id === updatedTodo.id);
+      updateTodo(todoToUpdate)
+        .then(updatedTodo => {
+          setTodos(currentTodos => {
+            const newTodos = [...currentTodos];
+            const index = newTodos.findIndex(
+              todo => todo.id === updatedTodo.id,
+            );
 
-          newTodos.splice(index, 1, updatedTodo);
+            newTodos.splice(index, 1, updatedTodo);
 
-          return newTodos;
-        });
+            return newTodos;
+          });
 
-        if (isEditing) {
-          setIsEditing!(false);
-        }
-      })
-      .catch(() => setErrorMessage(Errors.UPDATE_TODO))
-      .finally(() => setLoadingTodoIds([]));
-  };
+          if (isEditing) {
+            setIsEditing!(false);
+          }
+        })
+        .catch(() => setErrorMessage(Errors.UPDATE_TODO))
+        .finally(() => setLoadingTodoIds([]));
+    },
+    [],
+  );
 
   if (!USER_ID) {
     return <UserWarning />;
