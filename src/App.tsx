@@ -176,10 +176,6 @@ export const App: FC = () => {
               onUpdateTodo={handleUpdateTodo}
             />
 
-            {tempTodo && (
-              <TodoItemTemp tempTodo={tempTodo} isAddingTodo={isAddingTodo} />
-            )}
-
             <Footer
               todos={todos}
               filterStatus={filterStatus}
@@ -187,6 +183,10 @@ export const App: FC = () => {
               onDeleteTodo={handleDeleteTodo}
             />
           </>
+        )}
+
+        {tempTodo && (
+          <TodoItemTemp tempTodo={tempTodo} isAddingTodo={isAddingTodo} />
         )}
       </div>
 
