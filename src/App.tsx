@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo,
 } from 'react';
 
 import { UserWarning } from './UserWarning';
@@ -41,7 +42,16 @@ export const App: FC = () => {
   const [errorMessage, setErrorMessage] = useState(Errors.DEFAULT);
   const [filterStatus, setFilterStatus] = useState(FilterStatus.ALL);
 
-  useEffect(() => {
+  const handleResetErrorMessage = () => {
+    setErrorMessage(Errors.DEFAULT);
+  };
+
+  const filteredTodos = useMemo(
+    () => getFilteredTodos(todos, filterStatus),
+    [todos, filterStatus],
+  );
+
+  const handleGetAllTodos = () => {
     setErrorMessage(Errors.DEFAULT);
     setIsLoading(true);
 
@@ -49,13 +59,7 @@ export const App: FC = () => {
       .then(setTodos)
       .catch(() => setErrorMessage(Errors.LOADING_TODOS))
       .finally(() => setIsLoading(false));
-  }, []);
-
-  const handleResetErrorMessage = () => {
-    setErrorMessage(Errors.DEFAULT);
   };
-
-  const filteredTodos = getFilteredTodos(todos, filterStatus);
 
   const handleAddTodo = useCallback(
     (
@@ -140,6 +144,10 @@ export const App: FC = () => {
     [],
   );
 
+  useEffect(() => {
+    handleGetAllTodos();
+  }, []);
+
   if (!USER_ID) {
     return <UserWarning />;
   }
@@ -152,10 +160,10 @@ export const App: FC = () => {
         <Header
           todos={todos}
           setErrorMessage={setErrorMessage}
-          handleAddTodo={handleAddTodo}
+          onAddTodo={handleAddTodo}
           isAddingTodo={isAddingTodo}
           errorMessage={errorMessage}
-          handleUpdateTodo={handleUpdateTodo}
+          onUpdateTodo={handleUpdateTodo}
           isLoading={isLoading}
         />
 
@@ -163,9 +171,9 @@ export const App: FC = () => {
           <>
             <TodoList
               todos={filteredTodos}
-              handleDeleteTodo={handleDeleteTodo}
+              onDeleteTodo={handleDeleteTodo}
               todoToDelete={loadingTodoIds}
-              handleUpdateTodo={handleUpdateTodo}
+              onUpdateTodo={handleUpdateTodo}
             />
 
             {tempTodo && (
@@ -176,7 +184,7 @@ export const App: FC = () => {
               todos={todos}
               filterStatus={filterStatus}
               setFilterStatus={setFilterStatus}
-              handleDeleteTodo={handleDeleteTodo}
+              onDeleteTodo={handleDeleteTodo}
             />
           </>
         )}

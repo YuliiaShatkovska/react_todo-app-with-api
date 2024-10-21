@@ -8,6 +8,8 @@ import {
   FormEvent,
   Dispatch,
   SetStateAction,
+  useRef,
+  useEffect,
 } from 'react';
 import cn from 'classnames';
 
@@ -34,6 +36,8 @@ export const TodoItem: FC<Props> = ({
 
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleUpdateStatus = (event: ChangeEvent<HTMLInputElement>) => {
     handleUpdateTodo({
@@ -88,6 +92,12 @@ export const TodoItem: FC<Props> = ({
     setIsEditing(true);
   };
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
+
   return (
     <div
       data-cy="Todo"
@@ -115,7 +125,7 @@ export const TodoItem: FC<Props> = ({
             value={newTitle}
             onChange={handleChangeTitle}
             onBlur={handleSubmit}
-            autoFocus
+            ref={inputRef}
             onKeyUp={handleCancelEditingOnEsc}
           />
         </form>

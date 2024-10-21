@@ -7,15 +7,15 @@ import { TodoItem } from './TodoItem';
 type Props = {
   todos: Todo[];
   todoToDelete: number[];
-  handleDeleteTodo: (todoId: number) => void;
-  handleUpdateTodo: (todoToUpdate: Todo) => void;
+  onDeleteTodo: (todoId: number) => void;
+  onUpdateTodo: (todoToUpdate: Todo) => void;
 };
 
 export const TodoList: FC<Props> = ({
   todos,
   todoToDelete,
-  handleDeleteTodo,
-  handleUpdateTodo,
+  onDeleteTodo,
+  onUpdateTodo,
 }) => (
   <section className="todoapp__main" data-cy="TodoList">
     {todos.map(todo => (
@@ -23,8 +23,8 @@ export const TodoList: FC<Props> = ({
         key={todo.id}
         todo={todo}
         todoToDelete={todoToDelete}
-        handleDeleteTodo={handleDeleteTodo}
-        handleUpdateTodo={handleUpdateTodo}
+        handleDeleteTodo={onDeleteTodo}
+        handleUpdateTodo={onUpdateTodo}
       />
     ))}
   </section>

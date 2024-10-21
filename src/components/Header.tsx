@@ -18,20 +18,20 @@ type Props = {
   isAddingTodo: boolean;
   errorMessage: Errors;
   setErrorMessage: Dispatch<SetStateAction<Errors>>;
-  handleAddTodo: (
+  onAddTodo: (
     { title, userId, completed }: Omit<Todo, 'id'>,
     setTitle: Dispatch<SetStateAction<string>>,
   ) => void;
-  handleUpdateTodo: (todoToUpdate: Todo) => void;
+  onUpdateTodo: (todoToUpdate: Todo) => void;
   isLoading: boolean;
 };
 export const Header: FC<Props> = ({
   todos,
   setErrorMessage,
-  handleAddTodo,
+  onAddTodo,
   isAddingTodo,
   errorMessage,
-  handleUpdateTodo,
+  onUpdateTodo,
   isLoading,
 }) => {
   const [title, setTitle] = useState('');
@@ -39,12 +39,6 @@ export const Header: FC<Props> = ({
   const areTodosAllCompleted = todos.every(todo => todo.completed);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [todos, errorMessage]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trimStart();
@@ -62,7 +56,7 @@ export const Header: FC<Props> = ({
       return;
     }
 
-    handleAddTodo(
+    onAddTodo(
       {
         title: title.trim(),
         userId: USER_ID,
@@ -78,12 +72,18 @@ export const Header: FC<Props> = ({
     return todos
       .filter(todo => todo.completed !== completed)
       .map(todo =>
-        handleUpdateTodo({
+        onUpdateTodo({
           ...todo,
           completed,
         }),
       );
   };
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [todos, errorMessage]);
 
   return (
     <header className="todoapp__header">
@@ -104,7 +104,6 @@ export const Header: FC<Props> = ({
           type="text"
           className="todoapp__new-todo"
           placeholder="What needs to be done?"
-          autoFocus
           value={title}
           onChange={handleInputChange}
           disabled={isAddingTodo}

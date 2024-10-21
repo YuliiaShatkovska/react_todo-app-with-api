@@ -7,21 +7,21 @@ type Props = {
   todos: Todo[];
   filterStatus: FilterStatus;
   setFilterStatus: Dispatch<SetStateAction<FilterStatus>>;
-  handleDeleteTodo: (todoId: number) => void;
+  onDeleteTodo: (todoId: number) => void;
 };
 
 export const Footer: FC<Props> = ({
   todos,
   filterStatus,
   setFilterStatus,
-  handleDeleteTodo,
+  onDeleteTodo,
 }) => {
   const notCompletedTodos = todos.filter(todo => !todo.completed).length;
   const completedTodos = todos.filter(todo => todo.completed);
 
   const deleteCompletedTodos = () => {
     completedTodos.map(todo => {
-      handleDeleteTodo(todo.id);
+      onDeleteTodo(todo.id);
     });
   };
 
